@@ -1,9 +1,13 @@
 package com.usermanagement.exceptions;
 
-public class UserAlreadyExistsException extends Exception {
+public class UserAlreadyExistsException extends RuntimeException {
 
-	public UserAlreadyExistsException(String s) {
-        super(s);
+	public UserAlreadyExistsException(String msg, Throwable err){
+		super(msg, err);
+	}
+
+	public UserAlreadyExistsException(String msg){
+		super(msg);
 	}
 
 }

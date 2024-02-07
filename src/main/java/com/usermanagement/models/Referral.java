@@ -1,6 +1,7 @@
 package com.usermanagement.models;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,16 +20,28 @@ public class Referral {
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
 
-	    @ManyToOne
-	    @JoinColumn(name = "referrer_id")
-	    private User referrer;
-
-	    @ManyToOne
-	    @JoinColumn(name = "referred_user_id")
-	    private User referredUser;
+//	    @ManyToOne
+//	    @JoinColumn(name = "referrer_id")
+		@Column(name="referrer_id")
+	    private String referrer;
+//	    @ManyToOne
+//	    @JoinColumn(name = "referred_user_id")
+		@Column(name="referred_user_id")
+	    private String referredUser;
 
 	    @Column(name = "referral_date")
-	    private Date referralDate;
+	    private LocalDateTime referralDate;
+
+		@Column(name = "referrer_level")
+		private LocalDateTime referrerLevel;
+
+		public LocalDateTime getReferrerLevel() {
+		return referrerLevel;
+		}
+
+		public void setReferrerLevel(LocalDateTime referrerLevel) {
+		this.referrerLevel = referrerLevel;
+		}
 
 		public Long getId() {
 			return id;
@@ -38,27 +51,27 @@ public class Referral {
 			this.id = id;
 		}
 
-		public User getReferrer() {
+		public String getReferrer() {
 			return referrer;
 		}
 
-		public void setReferrer(User referrer) {
+		public void setReferrer(String referrer) {
 			this.referrer = referrer;
 		}
 
-		public User getReferredUser() {
+		public String getReferredUser() {
 			return referredUser;
 		}
 
-		public void setReferredUser(User referredUser) {
+		public void setReferredUser(String referredUser) {
 			this.referredUser = referredUser;
 		}
 
-		public Date getReferralDate() {
+		public LocalDateTime getReferralDate() {
 			return referralDate;
 		}
 
-		public void setReferralDate(Date referralDate) {
+		public void setReferralDate(LocalDateTime referralDate) {
 			this.referralDate = referralDate;
 		}
 	     

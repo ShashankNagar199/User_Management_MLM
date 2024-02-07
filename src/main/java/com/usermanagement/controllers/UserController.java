@@ -2,46 +2,51 @@ package com.usermanagement.controllers;
 
 import java.util.List;
 
+import com.usermanagement.dto.LoginUserRequest;
+import com.usermanagement.dto.LoginUserResponse;
+import com.usermanagement.dto.UserCreationDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
-import com.usermanagement.exceptions.ReferralException;
-import com.usermanagement.exceptions.UserAlreadyExistsException;
 import com.usermanagement.exceptions.UserNotFoundException;
 import com.usermanagement.models.Referral;
 import com.usermanagement.models.User;
 import com.usermanagement.services.UserService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(value="/api",produces = MediaType.APPLICATION_JSON_VALUE)
+@Validated
 public class UserController {
+
+	@Value("${spring.datasource.password}")
+	private Long dbPass;
 
 	    @Autowired
 	    private UserService userService;
-
-	    @PostMapping("/users")
-	    public User registerUser(@RequestBody User user) throws UserAlreadyExistsException {
-	        return userService.registerUser(user);
+		@PostMapping(value="/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
+	    public ResponseEntity<User> registerUser(@RequestBody UserCreationDto user) throws Exception {
+			return new ResponseEntity<>(userService.registerUser(user), HttpStatus.CREATED);
 	    }
 
-	    @GetMapping("/users")
+		@PostMapping(value="/login")
+		public ResponseEntity<LoginUserResponse> generateToken(@RequestBody LoginUserRequest loginUserRequest) {
+		final LoginUserResponse loginUserResponse = userService.login(loginUserRequest);
+		return new ResponseEntity<>(loginUserResponse, HttpStatus.OK);
+		}
+
+	    @GetMapping("/allUsers")
 	    public List<User> getAllUsers() {
 	        return userService.getAllUsers();
 	    }
 
-	    @GetMapping("/users/{email}")
-	    public User getUserByEmail(@PathVariable String email) {
-	        return userService.getUserByEmail(email);
-	    }
-
-	    @PostMapping("/referrals")
-	    public Referral recordReferral(@RequestBody Referral referral) throws ReferralException {
-	         return userService.recordReferral(referral);
+	    @GetMapping("/users/{userId}")
+	    public User getUserByEmail(@PathVariable String userId) {
+	        return userService.getUserByUserId(userId);
 	    }
 
 	    @GetMapping("/referrals/{email}")
@@ -49,15 +54,8 @@ public class UserController {
 	        return userService.getReferralsByUser(email);
 	    }
 
-	    @PostMapping("/calculate-commission")
-	    public void calculateCommission(@RequestBody User user) throws UserNotFoundException {
-	        userService.calculateCommissions(user);
-	    }
-
-	    @GetMapping("/commission/{email}")
-	    public int getCommissionByUser(@PathVariable String email) {
-	        User user = userService.getUserByEmail(email);
-	        return user.getCommission();
-	    }
-	
+//	    @PostMapping("/calculate-commission")
+//	    public void calculateCommission(@RequestBody User user) throws UserNotFoundException {
+//	        userService.calculateCommissions(user);
+//	    }
 }
