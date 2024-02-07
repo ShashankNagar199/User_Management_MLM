@@ -9,6 +9,6 @@ import com.usermanagement.models.User;
 
 public interface ReferralRepository extends JpaRepository<Referral, Long>{
 
-	List<Referral> findByReferrerOrReferredUser(User user);
+	List<Referral> findByReferrerOrReferredUser(String user);
 
 }
